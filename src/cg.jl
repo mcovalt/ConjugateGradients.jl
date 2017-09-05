@@ -53,9 +53,11 @@ function cg!{T<:Real}(A, b::Vector{T}, x::Vector{T}; tol::Float64=1e-6, maxIter:
 end
 
 # API
-function cg{T<:Real}(A, b::Vector{T}; kwargs...)
+function cg{T<:Real}(A, b::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
+                                      precon=copy!,
+                                      data=CGData(length(b), T))
     x = zeros(b)
-    exit_code, num_iters = cg!(A, b, x, kwargs...)
+    exit_code, num_iters = cg!(A, b, x, tol=tol, maxIter=maxIter, precon=precon, data=data)
     return x, exit_code, num_iters
 end
 

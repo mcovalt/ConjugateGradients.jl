@@ -85,12 +85,14 @@ function bicgstab!{T<:Real}(A, b::Vector{T}, x::Vector{T}; tol::Float64=1e-6, ma
 end
 
 # API
-function bicgstab{T<:Real}(A, b::Vector{T}; kwargs...)
+
+function bicgstab{T<:Real}(A, b::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
+                                            tolRho::Float64=1e-40, precon=copy!,
+                                            data=BiCGStabData(length(b), T))
     x = zeros(b)
-    exit_code, num_iters = bicgstab!(A, b, x, kwargs...)
+    exit_code, num_iters = bicgstab!(A, b, x, tol=tol, maxIter=maxIter, tolRho=tolRho, precon=precon, data=data)
     return x, exit_code, num_iters
 end
-
 
 
 export BiCGStabData, bicgstab!, bicgstab
