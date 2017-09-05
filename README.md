@@ -78,10 +78,10 @@ exit_string = reader(exit_code)
 The operator `A` and the preconditioner must be expressed as functions. If `A` is a matrix, one can do:
 
 ```julia
-x, exit_code, num_iters = cg((out, in) -> A_mul_B!(out, A, in), b; kwargs...)
+x, exit_code, num_iters = cg((x,y) -> A_mul_B!(x,A,y), b; kwargs...)
 ```
 
-Another usefull representation of `A` is a custom struct. For example, let's consider `(B*C + D)x = b`. Instead of wasting time to build `B*C + D`, we can create a non-allocating version of it.
+Another useful representation of `A` is a custom struct. For example, let's consider `(B*C + D)x = b`. Instead of wasting time to build `B*C + D`, we can create a non-allocating version of it.
 
 
 ```julia
