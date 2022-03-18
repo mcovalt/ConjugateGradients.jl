@@ -1,6 +1,6 @@
 # ConjugateGradients.jl
 
-`ConjugateGradients.jl` is a flexible, non-allocating Julia implementation of the conjugate gradient and biconjugate gradient stabilized methods. This module is compatible with [ForwardDiff.jl](https://github.com/JuliaDiff/ForwardDiff.jl).
+`ConjugateGradients.jl` is a flexible, non-allocating Julia implementation of the conjugate gradient and biconjugate gradient stabilized methods.
 
 ## Requirements
 
@@ -16,7 +16,7 @@ julia> Pkg.clone("https://github.com/mcovalt/ConjugateGradients.jl.git")
 
 You probably shouldn't (thus the unregistered status of the module). There are a few great iterative solver packages available for Julia: [IterativeSolvers.jl](https://github.com/JuliaMath/IterativeSolvers.jl), [KrylovMethods.jl](https://github.com/lruthotto/KrylovMethods.jl), and [Krylov.jl](https://github.com/JuliaSmoothOptimizers/Krylov.jl).
 
-In those packages, calls to BLAS functions are preferred for obvious reasons. However, the `Dual` number type used with [ForwardDiff.jl](https://github.com/JuliaDiff/ForwardDiff.jl) does not work in BLAS calls. This module uses Julia's multiple dispatch functionality to decide whether to use BLAS or native Julia code to make calculations based on the type associated with the arrays.
+In those packages, calls to BLAS functions are preferred for obvious reasons. This module uses Julia's multiple dispatch functionality to decide whether to use BLAS or native Julia code to make calculations based on the type associated with the arrays. This gives greater flexibility with types not represented by floating point numbers.
 
 In addition, `ConjugateGradients.jl` is built around reducing allocations as much as possible. As far as I know, if your program will be using an iterative solver *within* another iterative process, this module will result in less allocations compared to the previously mentioned packages.
 
