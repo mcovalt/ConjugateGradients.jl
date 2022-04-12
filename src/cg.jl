@@ -1,5 +1,5 @@
 # Data container
-immutable CGData{T<:Real}
+struct CGData{T<:Real}
     r::Vector{T}
     z::Vector{T}
     p::Vector{T}
@@ -10,9 +10,9 @@ CGData(n::Int, T::Type) = CGData(zeros(T, n), zeros(T, n),
                                  zeros(T, n), zeros(T, n))
 
 # Solves for x
-function cg!{T<:Real}(A, b::Vector{T}, x::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
+function cg!(A, b::Vector{T}, x::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
                                                      precon=copy!,
-                                                     data=CGData(length(b), T))
+                                                     data=CGData(length(b), T)) where {T<:Real}
     n = length(b)
     n_iter = 0
     if genblas_nrm2(b) == 0.0
@@ -53,10 +53,10 @@ function cg!{T<:Real}(A, b::Vector{T}, x::Vector{T}; tol::Float64=1e-6, maxIter:
 end
 
 # API
-function cg{T<:Real}(A, b::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
+function cg(A, b::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
                                       precon=copy!,
-                                      data=CGData(length(b), T))
-    x = zeros(b)
+                                      data=CGData(length(b), T)) where {T<:Real}
+    x = zeros(eltype(b), length(b))
     exit_code, num_iters = cg!(A, b, x, tol=tol, maxIter=maxIter, precon=precon, data=data)
     return x, exit_code, num_iters
 end

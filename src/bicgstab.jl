@@ -1,5 +1,5 @@
 # Data container
-immutable BiCGStabData{T}
+struct BiCGStabData{T}
     v::Vector{T}
     t::Vector{T}
     p::Vector{T}
@@ -16,9 +16,9 @@ BiCGStabData(n::Int, T::Type) = BiCGStabData(zeros(T, n), zeros(T, n),
                                              zeros(T, n), zeros(T, n))
 
 # Main solver
-function bicgstab!{T<:Real}(A, b::Vector{T}, x::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
+function bicgstab!(A, b::Vector{T}, x::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
                                                            tolRho::Float64=1e-40, precon=copy!,
-                                                           data=BiCGStabData(length(b), T))
+                                                           data=BiCGStabData(length(b), T)) where {T<:Real}
     n = length(b)
     out_int = 0
     n_iter = 0
@@ -86,10 +86,10 @@ end
 
 # API
 
-function bicgstab{T<:Real}(A, b::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
+function bicgstab(A, b::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
                                             tolRho::Float64=1e-40, precon=copy!,
-                                            data=BiCGStabData(length(b), T))
-    x = zeros(b)
+                                            data=BiCGStabData(length(b), T)) where {T<:Real}
+    x = zeros(eltype(b), length(b))
     exit_code, num_iters = bicgstab!(A, b, x, tol=tol, maxIter=maxIter, tolRho=tolRho, precon=precon, data=data)
     return x, exit_code, num_iters
 end
