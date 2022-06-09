@@ -1,33 +1,26 @@
-#!/usr/bin/env julia
-
-#Start Test Script
 using ConjugateGradients
-using Base.Test
+using LinearAlgebra
+using SparseArrays
+using Test
 
-function test_cg()
-    tA = sprandn(100,100,.1) + 10.0*speye(100)
+function test_cg(n=100)
+    tA = sprandn(n, n, 0.1) + spdiagm(0=>fill(10.0, n))
     A = tA'*tA
-    b = rand(100)
+    b = rand(n)
     true_x = A\b
-    x, exit_code, num_iters = cg((x,y) -> A_mul_B!(x, A, y) , b)
-    if norm(true_x - x) < 1e-6
-        return true
-    else
-        return false
-    end
+    x, exit_code, num_iters = cg((x,y) -> mul!(x, A, y), b)
+    norm(true_x - x) < 1e-6
 end
 
-function test_bicgstab()
-    A = sprandn(100,100,.1) + 10.0*speye(100)
-    b = rand(100)
+function test_bicgstab(n=100)
+    A = sprandn(n, n, 0.1) + spdiagm(0=>fill(10.0, n))
+    b = rand(n)
     true_x = A\b
-    x, exit_code, num_iters = bicgstab((x,y) -> A_mul_B!(x, A, y) , b)
-    if norm(true_x - x) < 1e-6
-        return true
-    else
-        return false
-    end
+    x, exit_code, num_iters = bicgstab((x,y) -> mul!(x, A, y), b)
+    norm(true_x - x) < 1e-6
 end
 
-@test test_cg()
-@test test_bicgstab()
+@testset "ConjugateGradients" begin
+    @test test_cg()
+    @test test_bicgstab()
+end

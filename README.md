@@ -4,12 +4,12 @@
 
 ## Requirements
 
-* Julia 0.6 and up
+* Julia 1.2 and up
 
-## Instalation
+## Installation
 
 ```julia
-julia> Pkg.clone("https://github.com/mcovalt/ConjugateGradients.jl.git")
+julia> Pkg.add("https://github.com/mcovalt/ConjugateGradients.jl.git")
 ```
 
 ## Why use ConjugateGradients.jl?
@@ -78,7 +78,7 @@ exit_string = reader(exit_code)
 The operator `A` and the preconditioner must be expressed as functions. If `A` is a matrix, one can do:
 
 ```julia
-x, exit_code, num_iters = cg((x,y) -> A_mul_B!(x,A,y), b; kwargs...)
+x, exit_code, num_iters = cg((x,y) -> mul!(x,A,y), b; kwargs...)
 ```
 
 Another useful representation of `A` is a custom struct. For example, let's consider `(B*C + D)x = b`. Instead of wasting time to build `B*C + D`, we can create a non-allocating version of it.
@@ -93,9 +93,9 @@ struct MyA
 end
 
 function (t::MyA)(out::Vector{Float64}, x::Vector{Float64})
-    A_mul_B!(t.cacheVec, t.C, x)
-    A_mul_B!(out, t.B, t.cacheVec)
-    A_mul_B!(t.cacheVec, t.D, x)
+    mul!(t.cacheVec, t.C, x)
+    mul!(out, t.B, t.cacheVec)
+    mul!(t.cacheVec, t.D, x)
     out .+= t.cacheVec
 end
 

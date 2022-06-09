@@ -1,5 +1,5 @@
 # Data container
-immutable BiCGStabData{T}
+struct BiCGStabData{T}
     v::Vector{T}
     t::Vector{T}
     p::Vector{T}
@@ -8,21 +8,18 @@ immutable BiCGStabData{T}
     shat::Vector{T}
     r::Vector{T}
     rtld::Vector{T}
+    BiCGStabData(n::Int, T::Type) = new{T}(
+        zeros(T, n), zeros(T, n),
+        zeros(T, n), zeros(T, n),
+        zeros(T, n), zeros(T, n),
+        zeros(T, n), zeros(T, n))
 end
 
-BiCGStabData(n::Int, T::Type) = BiCGStabData(zeros(T, n), zeros(T, n),
-                                             zeros(T, n), zeros(T, n),
-                                             zeros(T, n), zeros(T, n),
-                                             zeros(T, n), zeros(T, n))
-
 # Main solver
-function bicgstab!{T<:Real}(A, b::Vector{T}, x::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
-                                                           tolRho::Float64=1e-40, precon=copy!,
-                                                           data=BiCGStabData(length(b), T))
-    n = length(b)
-    out_int = 0
-    n_iter = 0
-    converge = false
+function bicgstab!(A, b::Vector{T}, x::Vector{T};
+                   tol::Float64=1e-6, maxIter::Int64=100,
+                   tolRho::Float64=1e-40, precon=copy!,
+                   data=BiCGStabData(length(b), T)) where {T<:Real}
     bnrm2 = genblas_nrm2(b)
     if bnrm2 == 0.0
         x .= 0.0
@@ -85,14 +82,13 @@ function bicgstab!{T<:Real}(A, b::Vector{T}, x::Vector{T}; tol::Float64=1e-6, ma
 end
 
 # API
-
-function bicgstab{T<:Real}(A, b::Vector{T}; tol::Float64=1e-6, maxIter::Int64=100,
-                                            tolRho::Float64=1e-40, precon=copy!,
-                                            data=BiCGStabData(length(b), T))
-    x = zeros(b)
+function bicgstab(A, b::Vector{T};
+                  tol::Float64=1e-6, maxIter::Int64=100,
+                  tolRho::Float64=1e-40, precon=copy!,
+                  data=BiCGStabData(length(b), T)) where {T<:Real}
+    x = zeros(eltype(b), length(b))
     exit_code, num_iters = bicgstab!(A, b, x, tol=tol, maxIter=maxIter, tolRho=tolRho, precon=precon, data=data)
     return x, exit_code, num_iters
 end
-
 
 export BiCGStabData, bicgstab!, bicgstab
