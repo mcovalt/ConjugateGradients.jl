@@ -9,7 +9,8 @@
 ## Installation
 
 ```julia
-julia> Pkg.add("https://github.com/mcovalt/ConjugateGradients.jl.git")
+julia> ]
+pkg> add ILUZero
 ```
 
 ## Why use ConjugateGradients.jl?
