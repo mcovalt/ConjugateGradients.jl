@@ -17,9 +17,11 @@ pkg> add ILUZero
 
 There are a few great iterative solver packages available for Julia: [IterativeSolvers.jl](https://github.com/JuliaMath/IterativeSolvers.jl), [KrylovMethods.jl](https://github.com/lruthotto/KrylovMethods.jl), and [Krylov.jl](https://github.com/JuliaSmoothOptimizers/Krylov.jl). These are all very well rounded and complete packages.
 
-This package, `ConjugateGradients.jl`, is built around reducing allocations as much as possible for a particular type of problem. As far as I know, if your program will be using an iterative solver *within* another iterative process, this module will result in less allocations compared to the previously mentioned packages. Hint: take a look at [ILUZero.jl](https://github.com/mcovalt/ILUZero.jl) if this type of solver would be beneficial to your project. Combined, these packages can help reduce allocations in those hot paths.
+This package, `ConjugateGradients.jl`, is built around reducing allocations as much as possible for a particular type of problem. As far as I know, if your program will be using an iterative solver *within* another iterative process, this module will result in less allocations compared to the previously mentioned packages<sup>*</sup>.
 
 Also, in other iterative solvers, calls to BLAS functions are preferred for obvious reasons. This package uses Julia's multiple dispatch functionality to decide whether to use BLAS or native Julia code to make calculations based on the type associated with the arrays. This gives greater flexibility with types not represented by floating point numbers.
+
+_<sup>*</sup> Hint: take a look at [ILUZero.jl](https://github.com/mcovalt/ILUZero.jl) if this type of solver would be beneficial to your project. Combined, these packages can help reduce allocations in those hot paths._
 
 ## How to use
 
