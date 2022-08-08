@@ -10,7 +10,7 @@
 
 ```julia
 julia> ]
-pkg> add ILUZero
+pkg> add ConjugateGradients
 ```
 
 ## Why use ConjugateGradients.jl?
