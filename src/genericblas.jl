@@ -1,4 +1,4 @@
-import LinearAlgebra: BLAS, BlasFloat, norm
+import LinearAlgebra: BLAS, BlasFloat, norm, dot
 
 genblas_dot(x::Vector{T}, y::Vector{T}) where {T<:BlasFloat} = BLAS.dot(x, y)
 genblas_dot(x, y) = dot(x,y)
